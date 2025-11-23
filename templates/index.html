@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<header class="bg-light py-5 mb-5 text-center hero-bg">
+    <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+        <h1 class="display-4 fw-bold">¿Qué es esto?</h1>
+        <p class="lead text-muted mb-4" style="max-width: 700px;">
+            Soy un soñador, creé esta página "oculta" con un par de colaboradores de manera gratuita, 
+            para practicar sobre manejo WEB, y con el fin de dejar DATA sobre mi aprendizaje y proyectos.
+        </p>
+        <a href="{{ url_for('data') }}" class="btn btn-primary btn-lg px-5">¿Quieres verlo?</a>
+    </div>
+</header>
+
+<section class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">¿Qué podrías encontrar aquí?</h2>
+        <p class="text-muted">Recopilación de datos, personas que sigo, data muy interesante que he recopilado.</p>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="p-4 border rounded shadow-sm h-100 hover-effect">
+                <img src="{{ url_for('static', filename='images/shapes.svg') }}" class="feature-icon mx-auto d-block mb-3" alt="Icono de Formas">
+                <h3 class="fw-bold fs-5">Datos</h3>
+                <p class="text-muted">Artículos y resúmenes con información de temas de tecnología, economía y más.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 border rounded shadow-sm h-100 hover-effect">
+                <img src="{{ url_for('static', filename='images/code.svg') }}" class="feature-icon mx-auto d-block mb-3" alt="Icono de Código">
+                <h3 class="fw-bold fs-5">Proyectos</h3>
+                <p class="text-muted">Pequeños proyectos de programación y análisis para demostrar habilidades.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 border rounded shadow-sm h-100 hover-effect">
+                <img src="{{ url_for('static', filename='images/people.svg') }}" class="feature-icon mx-auto d-block mb-3" alt="Icono de Personas">
+                <h3 class="fw-bold fs-5">Aprendizaje</h3>
+                <p class="text-muted">Tips sobre cómo adquirir certificaciones y profundizar en tu formación profesional.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Preguntas Frecuentes (FAQ)</h2>
+    </div>
+
+    <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                    ¿Qué tipo de DATA compartiremos?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    El conocimiento es poder. Aquí compartimos tips para adquirir certificados reales que apoyen tu formación.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                    ¿Existe alguna forma de contactarme con ustedes?
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Sí, te dejamos un correo en la parte inferior por si tienen alguna pregunta: <strong>info@bprime.42web.io</strong>.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                    ¿Es real o confiable esta información?
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    No al 100%, está basada en clases de nuestra universidad, artículos o cursos, pero intentaremos ser lo mejor posible dejando fuentes.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="bg-primary text-white text-center py-5">
+    <div class="container">
+        <h2>¿Estás listo para aprender?</h2>
+        <p class="lead">Inicia esta aventura, espero te apasione lo mismo que nosotros.</p>
+        <a href="{{ url_for('data') }}" class="btn btn-light btn-lg">¡Vamos!</a>
+    </div>
+</section>
+{% endblock %}

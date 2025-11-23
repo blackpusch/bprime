@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPRIME - Data</title>
+    
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/estilos.css"> 
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    
+    <style>
+        /* Estilos específicos para esta página */
+        .card-text { text-align: justify; }
+        .navbar-brand { font-weight: bold; }
+        .card:hover { 
+            transform: translateY(-5px); 
+            transition: 0.3s; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; 
+        }
+        .card-img-top {
+            /* Estilo para que todas las imágenes tengan la misma altura */
+            height: 180px; 
+            object-fit: cover;
+        }
+        /* Alineación del texto largo en el modal */
+        #modalContenido { 
+            white-space: pre-wrap; 
+            font-size: 1.1rem; 
+            line-height: 1.6;
+        }
+        /* Contenedor de la página con padding para que no choque con la nav */
+        .page-content {
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">BPRIME</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="data.html">Data</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container page-content">
+        <h1 class="text-center mb-4 display-5">Biblioteca de Artículos</h1>
+        <p class="text-center text-muted mb-5">Conectado en tiempo real a Google Drive</p>
+
+        <div class="row" id="contenedor-articulos">
+            <div class="text-center mt-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2">Obteniendo datos...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <h3 class="fw-bold">BPRIME.</h3>
+            <p>info@bprime.42web.io</p>
+            <small>Derechos reservados &copy; Wurst</small>
+        </div>
+    </footer>
+
+
+    <div class="modal fade" id="modalArticulo" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalTitulo"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalContenido"></p>
+                </div>
+                <div class="modal-footer bg-light">
+                    <small class="text-muted" id="modalAutor"></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ESTE ES EL ENLACE CORRECTO QUE YA VERIFICAMOS
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBc3CqHDM29kPOcJofzndMKYISmii03_AiukbEiRp9pgRqiSHoKlut8oAtgwbH6QtnWbR5kV2a2wkG/pub?output=csv";
+
+        Papa.parse(SHEET_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const data = results.data;
+                const container = document.getElementById('contenedor-articulos');
+                container.innerHTML = ""; // Borrar el spinner
+
+                if(data.length === 0) {
+                    container.innerHTML = "<p class='text-center text-danger'>No se encontraron artículos.</p>";
+                    return;
+                }
+
+                data.forEach((articulo, index) => {
+                    // Aseguramos que los campos existan, usando un nombre de columna en minúsculas por seguridad
+                    const titulo = articulo.titulo || articulo.Título || '';
+                    const contenido = articulo.contenido || articulo.Contenido || '';
+                    const autor = articulo.autor || articulo.Autor || 'Anónimo';
+                    const fecha = articulo.fecha || articulo.Fecha || '';
+                    const imagenUrl = articulo.imagen_url || articulo.Imagen_url || '';
+
+                    if(titulo) {
+                        // Limpieza de texto para la vista previa (quitar saltos de línea)
+                        const contenidoLimpio = contenido.replace(/(\r\n|\n|\r)/gm, " ");
+                        const contenidoCorto = contenidoLimpio.substring(0, 120) + (contenidoLimpio.length > 120 ? "..." : "");
+
+                        // Lógica para mostrar la imagen si existe la URL
+                        const imagenHTML = imagenUrl 
+                            ? `<img src="${imagenUrl}" class="card-img-top" alt="${titulo}" loading="lazy">` 
+                            : ''; 
+
+                        const cardHTML = `
+                            <div class="col-md-4 mb-4 fade-in">
+                                <div class="card h-100 shadow-sm border-0">
+                                    ${imagenHTML}
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title fw-bold text-primary">${titulo}</h5>
+                                        <h6 class="card-subtitle mb-3 text-muted small">${autor} - ${fecha}</h6>
+                                        <p class="card-text flex-grow-1">
+                                            ${contenidoCorto}
+                                        </p>
+                                        <button onclick="verArticulo(${index})" class="btn btn-outline-primary mt-3 align-self-start">Leer completo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += cardHTML;
+                    }
+                });
+                
+                // Guardamos los datos globales para el modal
+                window.articulosData = data;
+            },
+            error: function(err) {
+                console.error("Error:", err);
+                document.getElementById('contenedor-articulos').innerHTML = 
+                    `<div class="alert alert-danger text-center">
+                        Error cargando los datos. Verifica el enlace o la publicación de Google Sheets.
+                    </div>`;
+            }
+        });
+
+        // Función que abre el modal con la info completa
+        function verArticulo(index) {
+            const articulo = window.articulosData[index];
+            
+            // Usar '||' para manejar posibles valores vacíos
+            const titulo = articulo.titulo || articulo.Título || 'Artículo sin título';
+            const contenido = articulo.contenido || articulo.Contenido || 'Sin contenido.';
+            const autor = articulo.autor || articulo.Autor || 'BPRIME';
+            const fecha = articulo.fecha || articulo.Fecha || 'N/A';
+
+            document.getElementById('modalTitulo').innerText = titulo;
+            document.getElementById('modalContenido').innerText = contenido;
+            document.getElementById('modalAutor').innerText = `Escrito por: ${autor} | Fecha: ${fecha}`;
+            
+            var myModal = new bootstrap.Modal(document.getElementById('modalArticulo'));
+            myModal.show();
+        }
+    </script>
+</body>
+</html>

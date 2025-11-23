@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Biblioteca de Artículos{% endblock %}
+
+{% block content %}
+<header class="bg-primary text-white text-center py-5 mb-4">
+    <div class="container">
+        <h1 class="display-4">Bienvenido a Data</h1>
+        <p class="lead">Información recopilada de todo tipo sobre tecnología.</p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        {% for articulo in articulos %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-effect">
+                <img src="{{ articulo.imagen_url or url_for('static', filename='images/default.jpg') }}" class="card-img-top" alt="Imagen de {{ articulo.titulo }}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold">{{ articulo.titulo }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ articulo.autor }} - {{ articulo.fecha }}</h6>
+                    <p class="card-text text-justify">
+                        {{ articulo.contenido[:120] | default("Sin contenido.") }}...
+                    </p>
+                    <button class="mt-auto btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
+                        Leer completo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal{{ loop.index }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ articulo.titulo }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalContenido">{{ articulo.contenido }}</p> 
+                        <small class="text-muted d-block mt-3">Escrito por: {{ articulo.autor }} | Fecha: {{ articulo.fecha }}</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
