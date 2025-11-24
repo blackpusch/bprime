@@ -44,4 +44,6 @@ def perfil(nombre):
     return render_template(f'{nombre}.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Código corregido: Desactivamos el debug para evitar la alerta
+    # y garantizar la seguridad si se ejecuta accidentalmente.
+    app.run(debug=False)
